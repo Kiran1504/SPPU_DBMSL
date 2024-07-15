@@ -110,7 +110,6 @@ mysql> SELECT * FROM students WHERE branch in ('COMPUTER', 'IT');
 +----+----------+-------------+-------+------+----------+------------+
 4 rows in set (0.00 sec)
 
-Q3 -> 
 mysql> SELECT * FROM students WHERE name like 'a%' or name like 'b%';
 +----+----------+-------------+-------+------+----------+------------+
 | id | drive_id | training_id | name  | cgpa | branch   | dob        |
@@ -121,7 +120,7 @@ mysql> SELECT * FROM students WHERE name like 'a%' or name like 'b%';
 2 rows in set (0.01 sec)
 
 
-Q4 ->
+Q3 ->
 mysql> SELECT DISTINCT count(*) from placement_drive;
 +----------+
 | count(*) |
@@ -131,7 +130,7 @@ mysql> SELECT DISTINCT count(*) from placement_drive;
 1 row in set (0.00 sec)
 
 
-Q5 ->
+Q4 ->
 ------- BEFORE INCREASE -------
 
 mysql> SELECT * FROM training;
@@ -169,7 +168,7 @@ mysql> SELECT * FROM training;
 6 rows in set (0.00 sec)
 
 
-Q6 -> 
+Q5 -> 
 ---- BEFORE DELETING ----
 
 mysql> SELECT * FROM students;
@@ -210,7 +209,7 @@ mysql> SELECT * FROM students;
 +----+----------+-------------+---------+------+----------+------------+
 8 rows in set (0.01 sec)
 
-Q7 -> 
+Q6 -> 
 mysql> SELECT * FROM placement_drive WHERE location in ('Pune', 'Mumbai');
 +----+--------------+---------+----------+
 | id | company_name | package | location |
@@ -220,6 +219,20 @@ mysql> SELECT * FROM placement_drive WHERE location in ('Pune', 'Mumbai');
 |  6 | MasterCard   |   13.50 | Pune     |
 +----+--------------+---------+----------+
 3 rows in set (0.01 sec)
+
+Q7 ->
+mysql> SELECT name AS Name, training_year AS 'Training Year' FROM students JOIN training ON students.training_id = training.id WHERE training_year = 2019 OR training_year = 2021;
++---------+---------------+
+| Name    | Training Year |
++---------+---------------+
+| Charlie |          2019 |
+| David   |          2021 |
+| Henry   |          2019 |
+| Ivy     |          2021 |
+| Jack    |          2021 |
++---------+---------------+
+5 rows in set (0.00 sec)
+
 
 Q8 -> 
 mysql> SELECT name AS Name, MAX(cgpa) AS CGPA FROM students;
@@ -273,3 +286,28 @@ mysql> SELECT company_name AS 'Company Name', name AS 'Student Name', location A
 +--------------+--------------+-----------+---------+
 4 rows in set (0.01 sec)
 
+
+######## VIEW ########
+mysql> CREATE VIEW student_view AS SELECT name AS 'Student Name', branch AS Branch, company_name AS 'Company Name', package AS package FROM students JOIN placement_drive on students.drive_id = placement_drive.id;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> SELECT * FROM student_view;
++--------------+----------+--------------+---------+
+| Student Name | Branch   | Company Name | package |
++--------------+----------+--------------+---------+
+| Alice        | COMPUTER | Microsoft    |   36.00 |
+| Bob          | IT       | Amazon       |   42.00 |
+| Charlie      | ENTC     | PhonePe      |   34.00 |
+| David        | AIDS     | Arista       |   28.00 |
+| Grace        | IT       | Microsoft    |   36.00 |
+| Henry        | ENTC     | Amazon       |   42.00 |
+| Ivy          | AIDS     | PhonePe      |   34.00 |
+| Jack         | ECE      | Arista       |   28.00 |
++--------------+----------+--------------+---------+
+8 rows in set (0.01 sec)
+
+
+######## INDEX ########
+mysql> CREATE INDEX package_index ON placement_drive (company_name, package, location);
+Query OK, 0 rows affected (0.18 sec)
+Records: 0  Duplicates: 0  Warnings: 0
