@@ -1,0 +1,275 @@
+te@sel-a1-216-10:~$ mysql -h 10.10.14.184 -u te31332 -p
+mysql> SHOW DATABASEs;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| te31332_db         |
++--------------------+
+2 rows in set (0.01 sec)
+
+
+mysql> use te31332_db
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+
+
+mysql> SHOW TABLES;
++----------------------+
+| Tables_in_te31332_db |
++----------------------+
+| placement_drive      |
+| students             |
+| training             |
++----------------------+
+
+
+mysql> SELECT * FROM training;
++----+--------------+--------------+---------------+
+| id | company_name | training_fee | training_year |
++----+--------------+--------------+---------------+
+|  1 | Microsoft    |      2000.00 |          2018 |
+|  2 | Amazon       |      2875.00 |          2020 |
+|  3 | PhonePe      |      1725.00 |          2022 |
+|  4 | Arista       |         0.00 |          2022 |
+|  5 | Barclays     |      1725.00 |          2023 |
++----+--------------+--------------+---------------+
+5 rows in set (3.35 sec)
+
+
+mysql> INSERT INTO training VALUES (6, 'MasterCard', 1750, 2024);
+Query OK, 1 row affected (0.03 sec)
+
+
+mysql> SELECT * FROM training;
++----+--------------+--------------+---------------+
+| id | company_name | training_fee | training_year |
++----+--------------+--------------+---------------+
+|  1 | Microsoft    |      2000.00 |          2018 |
+|  2 | Amazon       |      2875.00 |          2020 |
+|  3 | PhonePe      |      1725.00 |          2022 |
+|  4 | Arista       |         0.00 |          2022 |
+|  5 | Barclays     |      1725.00 |          2023 |
+|  6 | MasterCard   |      1750.00 |          2024 |
++----+--------------+--------------+---------------+
+6 rows in set (0.00 sec)
+
+
+mysql> INSERT INTO placement_drive VALUES (1, 'MasterCard', 13.5, 'Pune'),(2, 'Barclays', 14.0, 'Pune'),(3, 'Microsoft', 36, 'Bengaluru'),(4, 'PhonePe', 34, 'Pune'),(5, 'Amazon', 42, 'Hyderabad'),(6, 'Arista', 28, 'Noida');
+Query OK, 6 rows affected (0.03 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+
+mysql> SELECT * FROM placement_drive;
++----+--------------+---------+-----------+
+| id | company_name | package | location  |
++----+--------------+---------+-----------+
+|  1 | MasterCard   |   13.50 | Pune      |
+|  2 | Barclays     |   14.00 | Pune      |
+|  3 | Microsoft    |   36.00 | Bengaluru |
+|  4 | PhonePe      |   34.00 | Pune      |
+|  5 | Amazon       |   42.00 | Hyderabad |
+|  6 | Arista       |   28.00 | Noida     |
++----+--------------+---------+-----------+
+6 rows in set (0.00 sec)
+
+Q1 ->
+mysql> INSERT INTO students (drive_id, training_id, name, cgpa, branch, dob) VALUES     (1, 1, 'Alice', 8.75, 'Computer Science', '2002-05-15'),     (2, 2, 'Bob', 8.50, 'Electrical Engineering', '2003-03-20'),     (3, 3, 'Charlie', 9.00, 'Mechanical Engineering', '2004-11-10'),     (4, 4, 'David', 8.25, 'Civil Engineering', '2002-08-25'),     (5, 5, 'Eve', 9.25, 'Information Technology', '2003-01-05'),     (6, 6, 'Frank', 8.80, 'Chemical Engineering', '2002-07-30'),     (1, 2, 'Grace', 9.10, 'Biotechnology', '2002-09-12'),     (2, 3, 'Henry', 8.95, 'Aerospace Engineering', '2003-04-18'),     (3, 4, 'Ivy', 8.40, 'Materials Science', '2002-12-03'),     (4, 5, 'Jack', 9.15, 'Software Engineering', '2003-10-20');
+Query OK, 10 rows affected (0.08 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+
+mysql> SELECT * FROM students;
++----+----------+-------------+---------+------+----------+------------+
+| id | drive_id | training_id | name    | cgpa | branch   | dob        |
++----+----------+-------------+---------+------+----------+------------+
+|  1 |        1 |           1 | Alice   | 8.75 | COMPUTER | 2002-05-15 |
+|  2 |        2 |           2 | Bob     | 8.50 | IT       | 2003-03-20 |
+|  3 |        3 |           3 | Charlie | 9.00 | ENTC     | 2004-11-10 |
+|  4 |        4 |           4 | David   | 8.25 | AIDS     | 2002-08-25 |
+|  5 |        5 |           5 | Eve     | 9.25 | ECE      | 2003-01-05 |
+|  6 |        6 |           6 | Frank   | 8.80 | COMPUTER | 2002-07-30 |
+|  7 |        1 |           2 | Grace   | 9.10 | IT       | 2002-09-12 |
+|  8 |        2 |           3 | Henry   | 8.95 | ENTC     | 2003-04-18 |
+|  9 |        3 |           4 | Ivy     | 8.40 | AIDS     | 2002-12-03 |
+| 10 |        4 |           5 | Jack    | 9.15 | ECE      | 2003-10-20 |
++----+----------+-------------+---------+------+----------+------------+
+10 rows in set (0.00 sec)
+
+Q2 ->
+mysql> SELECT * FROM students WHERE branch in ('COMPUTER', 'IT');
++----+----------+-------------+-------+------+----------+------------+
+| id | drive_id | training_id | name  | cgpa | branch   | dob        |
++----+----------+-------------+-------+------+----------+------------+
+|  1 |        1 |           1 | Alice | 8.75 | COMPUTER | 2002-05-15 |
+|  2 |        2 |           2 | Bob   | 8.50 | IT       | 2003-03-20 |
+|  6 |        6 |           6 | Frank | 8.80 | COMPUTER | 2002-07-30 |
+|  7 |        1 |           2 | Grace | 9.10 | IT       | 2002-09-12 |
++----+----------+-------------+-------+------+----------+------------+
+4 rows in set (0.00 sec)
+
+Q3 -> 
+mysql> SELECT * FROM students WHERE name like 'a%' or name like 'b%';
++----+----------+-------------+-------+------+----------+------------+
+| id | drive_id | training_id | name  | cgpa | branch   | dob        |
++----+----------+-------------+-------+------+----------+------------+
+|  1 |        1 |           1 | Alice | 8.75 | COMPUTER | 2002-05-15 |
+|  2 |        2 |           2 | Bob   | 8.50 | IT       | 2003-03-20 |
++----+----------+-------------+-------+------+----------+------------+
+2 rows in set (0.01 sec)
+
+
+Q4 ->
+mysql> SELECT DISTINCT count(*) from placement_drive;
++----------+
+| count(*) |
++----------+
+|        6 |
++----------+
+1 row in set (0.00 sec)
+
+
+Q5 ->
+------- BEFORE INCREASE -------
+
+mysql> SELECT * FROM training;
++----+--------------+--------------+---------------+
+| id | company_name | training_fee | training_year |
++----+--------------+--------------+---------------+
+|  1 | Microsoft    |      2777.90 |          2018 |
+|  2 | Amazon       |      5550.41 |          2020 |
+|  3 | PhonePe      |      4418.33 |          2022 |
+|  4 | Arista       |      3440.41 |          2022 |
+|  5 | Barclays     |      6947.08 |          2023 |
+|  6 | MasterCard   |      2414.19 |          2024 |
++----+--------------+--------------+---------------+
+6 rows in set (0.00 sec)
+
+
+------- AFTER FEE INCREASE -------
+
+mysql> UPDATE training SET training_fee = training_fee * 0.15 + training_fee WHERE training_year > 2019;
+Query OK, 5 rows affected, 5 warnings (0.04 sec)
+Rows matched: 5  Changed: 5  Warnings: 5
+
+
+mysql> SELECT * FROM training;
++----+--------------+--------------+---------------+
+| id | company_name | training_fee | training_year |
++----+--------------+--------------+---------------+
+|  1 | Microsoft    |      2777.90 |          2018 |
+|  2 | Amazon       |      6382.97 |          2020 |
+|  3 | PhonePe      |      5081.08 |          2022 |
+|  4 | Arista       |      3956.47 |          2022 |
+|  5 | Barclays     |      7989.14 |          2023 |
+|  6 | MasterCard   |      2776.32 |          2024 |
++----+--------------+--------------+---------------+
+6 rows in set (0.00 sec)
+
+
+Q6 -> 
+---- BEFORE DELETING ----
+
+mysql> SELECT * FROM students;
++----+----------+-------------+---------+------+----------+------------+
+| id | drive_id | training_id | name    | cgpa | branch   | dob        |
++----+----------+-------------+---------+------+----------+------------+
+|  1 |        1 |           1 | Alice   | 8.75 | COMPUTER | 2002-05-15 |
+|  2 |        2 |           2 | Bob     | 8.50 | IT       | 2003-03-20 |
+|  3 |        3 |           3 | Charlie | 9.00 | ENTC     | 2004-11-10 |
+|  4 |        4 |           4 | David   | 8.25 | AIDS     | 2002-08-25 |
+|  5 |        5 |           5 | Eve     | 9.25 | ECE      | 2003-01-05 |
+|  6 |        6 |           6 | Frank   | 8.80 | COMPUTER | 2002-07-30 |
+|  7 |        1 |           2 | Grace   | 9.10 | IT       | 2002-09-12 |
+|  8 |        2 |           3 | Henry   | 8.95 | ENTC     | 2003-04-18 |
+|  9 |        3 |           4 | Ivy     | 8.40 | AIDS     | 2002-12-03 |
+| 10 |        4 |           5 | Jack    | 9.15 | ECE      | 2003-10-20 |
++----+----------+-------------+---------+------+----------+------------+
+10 rows in set (0.00 sec)
+
+
+---- AFTER DELETING ----
+
+mysql> DELETE FROM students WHERE cgpa < 7;
+Query OK, 2 rows affected (0.04 sec)
+
+mysql> SELECT * FROM students;
++----+----------+-------------+---------+------+----------+------------+
+| id | drive_id | training_id | name    | cgpa | branch   | dob        |
++----+----------+-------------+---------+------+----------+------------+
+|  1 |        1 |           1 | Alice   | 8.75 | COMPUTER | 2002-05-15 |
+|  2 |        2 |           2 | Bob     | 8.50 | IT       | 2003-03-20 |
+|  3 |        3 |           3 | Charlie | 9.00 | ENTC     | 2004-11-10 |
+|  4 |        4 |           4 | David   | 8.25 | AIDS     | 2002-08-25 |
+|  7 |        1 |           2 | Grace   | 9.10 | IT       | 2002-09-12 |
+|  8 |        2 |           3 | Henry   | 8.95 | ENTC     | 2003-04-18 |
+|  9 |        3 |           4 | Ivy     | 8.40 | AIDS     | 2002-12-03 |
+| 10 |        4 |           5 | Jack    | 9.15 | ECE      | 2003-10-20 |
++----+----------+-------------+---------+------+----------+------------+
+8 rows in set (0.01 sec)
+
+Q7 -> 
+mysql> SELECT * FROM placement_drive WHERE location in ('Pune', 'Mumbai');
++----+--------------+---------+----------+
+| id | company_name | package | location |
++----+--------------+---------+----------+
+|  3 | PhonePe      |   34.00 | Pune     |
+|  5 | Barclays     |   14.00 | Mumbai   |
+|  6 | MasterCard   |   13.50 | Pune     |
++----+--------------+---------+----------+
+3 rows in set (0.01 sec)
+
+Q8 -> 
+mysql> SELECT name AS Name, MAX(cgpa) AS CGPA FROM students;
++-------+------+
+| Name  | CGPA |
++-------+------+
+| Alice | 9.15 |
++-------+------+
+1 row in set (0.00 sec)
+
+mysql> SELECT name AS Name, cgpa AS CGPA FROM students WHERE cgpa BETWEEN 7 AND 9;
++---------+------+
+| Name    | CGPA |
++---------+------+
+| Alice   | 8.75 |
+| Bob     | 8.50 |
+| Charlie | 9.00 |
+| David   | 8.25 |
+| Henry   | 8.95 |
+| Ivy     | 8.40 |
++---------+------+
+6 rows in set (0.00 sec)
+
+
+Q9 -> 
+mysql> SELECT name as Name, training_id as 'Training ID', training_fee as 'Training Fee' FROM students, training WHERE students.training_id = training.id ORDER BY training_fee DESC;
++---------+-------------+--------------+
+| Name    | Training ID | Training Fee |
++---------+-------------+--------------+
+| Jack    |           5 |      7989.14 |
+| Grace   |           2 |      6382.97 |
+| Bob     |           2 |      6382.97 |
+| Henry   |           3 |      5081.08 |
+| Charlie |           3 |      5081.08 |
+| Ivy     |           4 |      3956.47 |
+| David   |           4 |      3956.47 |
+| Alice   |           1 |      2777.90 |
++---------+-------------+--------------+
+8 rows in set (0.01 sec)
+
+
+Q10 -> 
+mysql> SELECT company_name AS 'Company Name', name AS 'Student Name', location AS Location, package AS Package FROM placement_drive JOIN students ON students.drive_id = placement_drive.id WHERE placement_drive.package BETWEEN 30 AND 40;
++--------------+--------------+-----------+---------+
+| Company Name | Student Name | Location  | Package |
++--------------+--------------+-----------+---------+
+| Microsoft    | Alice        | Bengaluru |   36.00 |
+| PhonePe      | Charlie      | Pune      |   34.00 |
+| Microsoft    | Grace        | Bengaluru |   36.00 |
+| PhonePe      | Ivy          | Pune      |   34.00 |
++--------------+--------------+-----------+---------+
+4 rows in set (0.01 sec)
+
