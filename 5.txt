@@ -1,0 +1,190 @@
+mysql> mysql> create table stud_marks(name VARCHAR(100) PRIMARY KEY,total_marks INT);
+Query OK, 0 rows affected (0.16 sec)
+mysql> create table result(roll INT PRIMARY KEY,name VARCHAR(100),class VARCHAR(50));
+Query OK, 0 rows affected (0.25 sec)
+mysql> show tables;
++----------------------+
+| Tables_in_te31335_db |
++----------------------+
+| Borrower |
+| DEPT |
+| EMPLOYEE |
+| PROJECT |
+| area |
+| emp_dept |
+| result |
+| stud_marks |
+| student |
++----------------------+
+9 rows in set (0.01 sec)
+
+
+mysql> delimiter //
+mysql> create procedure proc_grade(IN r INT, OUT grade VARCHAR(50))
+    -> begin
+    -> declare mark INT;
+    -> select total_marks into mark
+    -> from stud_marks where name = (select name from result where roll=r);
+    -> if mark>=990 and mark<=1500 then set grade = 'Distinction';
+    -> update result set class = 'Distinction' where roll=r;
+    -> elseif mark>=900 and mark<=989 then set grade='FirstClass';
+    -> update result set class='FirstClass' where roll=r;
+    -> elseif mark>=825 and mark<=899 then set grade='HigherSecondClass';
+    -> update result set class='HigherSecondClass' where roll=r;
+    -> else set grade='Pass';
+    -> update result set class='Pass' where roll=r;
+    -> end if;
+    -> end //
+mysql> DELIMITER ;
+
+
+mysql> describe stud_marks;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| name        | varchar(100) | NO   | PRI | NULL    |       |
+| total_marks | int(11)      | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+
+mysql> describe result;
++-------+--------------+------+-----+---------+-------+
+| Field | Type         | Null | Key | Default | Extra |
++-------+--------------+------+-----+---------+-------+
+| roll  | int(11)      | NO   | PRI | NULL    |       |
+| name  | varchar(100) | YES  |     | NULL    |       |
+| class | varchar(50)  | YES  |     | NULL    |       |
++-------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+
+mysql> insert into stud_marks(name,total_marks) values('Phil Dunphy',400);
+Query OK, 1 row affected (0.04 sec)
+mysql> insert into stud_marks(name,total_marks) values('Steve Rogers',1000);
+Query OK, 1 row affected (0.04 sec)
+mysql> insert into stud_marks(name,total_marks) values('Claire Prichett',800);
+Query OK, 1 row affected (0.04 sec)
+mysql> insert into stud_marks(name,total_marks) values('Hayley Dunphy',250);
+Query OK, 1 row affected (0.03 sec)
+mysql> insert into stud_marks(name,total_marks) values('ALex Greyjoy',1200);
+Query OK, 1 row affected (0.03 sec)
+
+mysql> insert into result(roll,name,class) values(1,'Alex Greyjoy','A');
+Query OK, 1 row affected (0.03 sec)
+mysql> insert into result(roll,name,class) values(2,'Hayley Dunphy','A');
+Query OK, 1 row affected (0.02 sec)
+mysql> insert into result(roll,name,class) values(3,'Claire Prichett','B');
+Query OK, 1 row affected (0.02 sec)
+mysql> insert into result(roll,name,class) values(4,'Steve Rogers','B');
+Query OK, 1 row affected (0.03 sec)
+mysql> insert into result(roll,name,class) values(5,'Phil Dunphy','C');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> SET @grade = '';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> CALL proc_grade(3,@grade);
+Query OK, 2 rows affected (0.04 sec)
+
+mysql> select @grade;
++--------+
+| @grade |
++--------+
+| Pass   |
++--------+
+1 row in set (0.00 sec)
+
+mysql> select * from stud_marks;
++-----------------+-------------+
+| name            | total_marks |
++-----------------+-------------+
+| ALex Greyjoy    |        1200 |
+| Claire Prichett |         800 |
+| Hayley Dunphy   |         250 |
+| Phil Dunphy     |         400 |
+| Steve Rogers    |        1000 |
++-----------------+-------------+
+5 rows in set (0.00 sec)
+
+
+mysql> select * from result;
++------+-----------------+-------+
+| roll | name            | class |
++------+-----------------+-------+
+|    1 | Alex Greyjoy    | A     |
+|    2 | Hayley Dunphy   | A     |
+|    3 | Claire Prichett | Pass  |
+|    4 | Steve Rogers    | B     |
+|    5 | Phil Dunphy     | C     |
++------+-----------------+-------+
+5 rows in set (0.00 sec)
+
+
+mysql> CALL proc_grade(1,@grade);
+Query OK, 2 rows affected (0.04 sec)
+mysql> CALL proc_grade(2,@grade);
+Query OK, 2 rows affected (0.04 sec)
+mysql> CALL proc_grade(4,@grade);
+Query OK, 2 rows affected (0.04 sec)
+mysql> CALL proc_grade(5,@grade);
+Query OK, 2 rows affected (0.04 sec)
+
+
+mysql> select * from result;
++------+-----------------+-------------+
+| roll | name            | class       |
++------+-----------------+-------------+
+|    1 | Alex Greyjoy    | Distinction |
+|    2 | Hayley Dunphy   | Pass        |
+|    3 | Claire Prichett | Pass        |
+|    4 | Steve Rogers    | Distinction |
+|    5 | Phil Dunphy     | Pass        |
++------+-----------------+-------------+
+5 rows in set (0.00 sec)
+
+
+mysql> insert into stud_marks(name, total_marks) values ('Jon Snow',950);
+Query OK, 1 row affected (0.03 sec)
+mysql> insert into result(roll,name,class) values(6,'Jon Snow','D');
+Query OK, 1 row affected (0.03 sec)
+
+
+mysql> select * from result;
++------+-----------------+-------------+
+| roll | name            | class       |
++------+-----------------+-------------+
+|    1 | Alex Greyjoy    | Distinction |
+|    2 | Hayley Dunphy   | Pass        |
+|    3 | Claire Prichett | Pass        |
+|    4 | Steve Rogers    | Distinction |
+|    5 | Phil Dunphy     | Pass        |
+|    6 | Jon Snow        | D           |
++------+-----------------+-------------+
+6 rows in set (0.00 sec)
+
+
+mysql> call proc_grade(6,@grade);
+Query OK, 2 rows affected (0.03 sec)
+
+mysql> SELECT @grade;
++------------+
+| @grade     |
++------------+
+| FirstClass |
++------------+
+1 row in set (0.00 sec)
+
+
+mysql> select * from result;
++------+-----------------+-------------+
+| roll | name            | class       |
++------+-----------------+-------------+
+|    1 | Alex Greyjoy    | Distinction |
+|    2 | Hayley Dunphy   | Pass        |
+|    3 | Claire Prichett | Pass        |
+|    4 | Steve Rogers    | Distinction |
+|    5 | Phil Dunphy     | Pass        |
+|    6 | Jon Snow        | FirstClass  |
++------+-----------------+-------------+
+6 rows in set (0.00 sec)

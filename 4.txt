@@ -1,0 +1,126 @@
+te@sel-a1-216-09:~$ mysql -h 10.10.14.93 -u te31332 -p
+mysql> USE te31332_db
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+
+
+mysql> CREATE TABLE circleArea (radius INT PRIMARY KEY, area DECIMAL(10,2));
+Query OK, 0 rows affected (0.15 sec)
+
+
+mysql> INSERT INTO  circleArea (radius) VALUES (5),(6),(7),(8),(9);
+Query OK, 5 rows affected (0.04 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+
+mysql> SELECT * FROM circleArea; //
++--------+------+
+| radius | area |
++--------+------+
+|      5 | NULL |
+|      6 | NULL |
+|      7 | NULL |
+|      8 | NULL |
+|      9 | NULL |
++--------+------+
+5 rows in set (0.00 sec)
+
+
+mysql> DELIMITER //
+mysql> CREATE PROCEDURE findArea (IN rad INT)  
+    BEGIN 
+        DECLARE area DECIMAL(10,2); 
+        SET area = 3.14 * rad * rad; 
+        UPDATE circleArea 
+        SET area = area 
+        WHERE radius = rad; 
+    END // 
+    DELIMITER;
+Query OK, 0 rows affected (0.07 sec)
+
+
+
+mysql> CALL findArea(5); //
+Query OK, 1 row affected (0.03 sec)
+mysql> CALL findArea(6); //
+Query OK, 1 row affected (0.04 sec)
+mysql> CALL findArea(7); //
+Query OK, 1 row affected (0.03 sec)
+mysql> CALL findArea(8); //
+Query OK, 1 row affected (0.04 sec)
+mysql> CALL findArea(9); //
+Query OK, 1 row affected (0.03 sec)
+
+
+
+mysql> SELECT * FROM circleArea; //
++--------+--------+
+| radius | area   |
++--------+--------+
+|      5 |  78.50 |
+|      6 | 113.04 |
+|      7 | 153.86 |
+|      8 | 200.96 |
+|      9 | 254.34 |
++--------+--------+
+5 rows in set (0.00 sec)
+
+
+
+
+
+mysql> CREATE TABLE Borrower (
+    ->     Roll_no INT PRIMARY KEY,
+    ->     Name VARCHAR(100),
+    ->     Date_of_Issue DATE,
+    ->     Name_of_Book VARCHAR(100),
+    ->     Status CHAR(1)
+    -> );
+    -> //
+Query OK, 0 rows affected (0.19 sec)
+
+mysql> INSERT INTO Borrower (Roll_no, Name, Date_of_Issue, Name_of_Book, Status) VALUES
+    -> (1, 'Aarav Sharma', '2024-06-10', 'The Great Indian Novel', 'I'),
+    -> (2, 'Vihaan Patel', '2024-06-15', 'The Alchemist', 'I'),
+    -> (3, 'Aditya Kumar', '2024-06-20', 'To Kill a Mockingbird', 'I'),
+    -> (4, 'Aisha Khan', '2024-06-25', 'The Immortals of Meluha', 'I'),
+    -> (5, 'Saanvi Gupta', '2024-07-01', 'Rich Dad Poor Dad', 'I'),
+    -> (6, 'Ishaan Verma', '2024-07-05', 'The Power of Now', 'I'),
+    -> (7, 'Ananya Singh', '2024-07-10', 'Catching Fire', 'I'),
+    -> (8, 'Reyansh Joshi', '2024-07-15', 'Sapiens', 'I'),
+    -> (9, 'Kavya Mehta', '2024-07-20', 'The Diary of a Young Girl', 'I'),
+    -> (10, 'Arjun Reddy', '2024-07-25', 'Becoming', 'I'),
+    -> (11, 'Mira Sharma', '2024-08-01', 'Educated', 'I'),
+    -> (12, 'Rohan Patel', '2024-08-05', 'The Kite Runner', 'I'),
+    -> (13, 'Neha Gupta', '2024-08-07', 'The Da Vinci Code', 'I'),
+    -> (14, 'Kabir Singh', '2024-08-01', 'The Silent Patient', 'I'),
+    -> (15, 'Pooja Nair', '2024-08-07', 'Where the Crawdads Sing', 'I');
+    -> //
+Query OK, 15 rows affected (0.02 sec)
+Records: 15  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Borrower; //
++---------+---------------+---------------+---------------------------+--------+
+| Roll_no | Name          | Date_of_Issue | Name_of_Book              | Status |
++---------+---------------+---------------+---------------------------+--------+
+|       1 | Aarav Sharma  | 2024-06-10    | The Great Indian Novel    | I      |
+|       2 | Vihaan Patel  | 2024-06-15    | The Alchemist             | I      |
+|       3 | Aditya Kumar  | 2024-06-20    | To Kill a Mockingbird     | I      |
+|       4 | Aisha Khan    | 2024-06-25    | The Immortals of Meluha   | I      |
+|       5 | Saanvi Gupta  | 2024-07-01    | Rich Dad Poor Dad         | I      |
+|       6 | Ishaan Verma  | 2024-07-05    | The Power of Now          | I      |
+|       7 | Ananya Singh  | 2024-07-10    | Catching Fire             | I      |
+|       8 | Reyansh Joshi | 2024-07-15    | Sapiens                   | I      |
+|       9 | Kavya Mehta   | 2024-07-20    | The Diary of a Young Girl | I      |
+|      10 | Arjun Reddy   | 2024-07-25    | Becoming                  | I      |
+|      11 | Mira Sharma   | 2024-08-01    | Educated                  | I      |
+|      12 | Rohan Patel   | 2024-08-05    | The Kite Runner           | I      |
+|      13 | Neha Gupta    | 2024-08-07    | The Da Vinci Code         | I      |
+|      14 | Kabir Singh   | 2024-08-01    | The Silent Patient        | I      |
+|      15 | Pooja Nair    | 2024-08-07    | Where the Crawdads Sing   | I      |
++---------+---------------+---------------+---------------------------+--------+
+15 rows in set (0.00 sec)
+
+mysql> CREATE PROCEDURE returnBook(IN stud INT) BEGIN DECLARE days INT; DECLARE doi DATE;DECLARE EXIT HANDLER FOR NOT_FOUND BEGIN SELECT 'date of issue not found'; END; SET doi = SELECT Date_of_Issue FROM Borrower WHERE id = stud; SET days = DATEDIFF(CURDATE(), doi);

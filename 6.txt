@@ -1,0 +1,23 @@
+mysql> CREATE TABLE O_EmpId (     EmpId INT PRIMARY KEY,     EmpName VARCHAR(100) );
+Query OK, 0 rows affected (0.14 sec)
+
+mysql> CREATE TABLE N_EmpId (     EmpId INT PRIMARY KEY,     EmpName VARCHAR(100) );
+Query OK, 0 rows affected (0.18 sec)
+
+mysql> INSERT INTO O_EmpId (EmpId, EmpName) VALUES (1, 'John Doe');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO O_EmpId (EmpId, EmpName) VALUES (2, 'Jane Smith');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO O_EmpId (EmpId, EmpName) VALUES (3, 'Emily Johnson');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO N_EmpId (EmpId, EmpName) VALUES (2, 'Jane Smith');
+Query OK, 1 row affected (0.02 sec)
+
+mysql> INSERT INTO N_EmpId (EmpId, EmpName) VALUES (4, 'Michael Brown');
+Query OK, 1 row affected (0.02 sec)
+
+mysql> INSERT INTO N_EmpId (EmpId, EmpName) VALUES (5, 'Linda White');
+Query OK, 1 row affected (0.02 sec)
