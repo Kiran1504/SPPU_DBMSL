@@ -1,0 +1,83 @@
+package Demo;
+
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
+import org.bson.Document;
+
+import java.util.Scanner;
+
+public class mongoconn {
+
+    public static void main(String args[]) {
+
+        try {
+            MongoClient mclient = new MongoClient(new MongoClientURI("mongodb://te31332:te31332@10.10.13.97:27017/te31332_db"));
+            MongoDatabase db = mclient.getDatabase("te31332_db");
+            db.createCollection("student");
+            MongoCollection<Document> col = db.getCollection("student");
+
+            System.out.println("1. Insert\n2. Delete\n3. Update\n4. Show");
+
+            int choice;
+            Scanner sc = new Scanner(System.in);
+            int roll;
+            while (true) {
+                System.out.println("Enter choice: ");
+                choice = sc.nextInt();
+
+                switch (choice) {
+                    case 1: // Insert
+                        System.out.println("Name:");
+                        sc.nextLine(); // Consume the newline
+                        String name = sc.nextLine();
+                        System.out.println("Roll no.:");
+                        roll = sc.nextInt();
+                        
+                        Document doc = new Document();
+                        doc.append("roll", roll);
+                        doc.append("name", name);
+                        col.insertOne(doc);
+                        System.out.println("Document inserted successfully!");
+                        break;
+
+                    case 2: // Delete
+                        System.out.println("Roll no.:");
+                        roll = sc.nextInt();
+                        col.deleteOne(Filters.eq("roll", roll));
+                        System.out.println("Document deleted successfully!");
+                        break;
+
+                    case 3: // Update
+                        System.out.println("Roll no: ");
+                        roll = sc.nextInt();
+                        System.out.println("Enter updated name: ");
+                        sc.nextLine(); // Consume the newline
+                        name = sc.nextLine();
+
+                        Document updateDoc = new Document();
+                        updateDoc.append("roll", roll);
+                        updateDoc.append("name", name);
+                        col.replaceOne(Filters.eq("roll", roll), updateDoc);
+                        System.out.println("Document updated successfully!");
+                        break;
+
+                    case 4: // Show
+                        System.out.println("Current students in the collection:");
+                        for (Document student : col.find()) {
+                            System.out.println(student.toJson());
+                        }
+                        break;
+
+                    default:
+                        System.out.println("Invalid choice, please try again.");
+                        break;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
+        }
+    }
+}
